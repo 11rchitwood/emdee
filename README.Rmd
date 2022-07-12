@@ -16,20 +16,17 @@ knitr::opts_chunk$set(
 # emdee
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/emdee)](https://CRAN.R-project.org/package=emdee)
-[![Codecov test coverage](https://codecov.io/gh/11rchitwood/emdee/branch/master/graph/badge.svg)](https://app.codecov.io/gh/11rchitwood/emdee?branch=master)
-[![R-CMD-check](https://github.com/11rchitwood/emdee/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/11rchitwood/emdee/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of emdee is to ...
 
 ## Installation
 
-You can install the development version of emdee like so:
+You can install the development version of emdee from [GitHub](https://github.com/) with:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+# install.packages("devtools")
+devtools::install_github("11rchitwood/emdee")
 ```
 
 ## Example
