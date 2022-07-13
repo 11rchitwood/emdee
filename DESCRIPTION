@@ -5,7 +5,7 @@ Authors@R:
     person("Ryan", "Chitwood", role = c("aut", "cre"),
            email = "26073857+11rchitwood@users.noreply.github.com",
            comment = c(ORCID = "0000-0002-0255-5603"))
-Description: An elegant literate programming language
+Description: emdee is an elegant literate programming language.
 License: MIT + file LICENSE
 Suggests:
     covr,
