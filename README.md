@@ -1,11 +1,11 @@
 # emdee
 
-A lisp for literate programming
+An environment for literate programming
 
 Stop writing tests, code, and documentation separately.
 Write them all at once in a single file with emdee.
 
-```lisp
-(+ 1 2)
-;=> 3
+```emdee
+add 1 1
+#> 2
 ```
