@@ -17,7 +17,7 @@ The `.emdee` file is always the source of truth. Running it produces a `.md` fil
 ## Usage
 
 ```sh
-emdee file.emdee          # run and assert output matches file.md (if it exists)
+emdee file.emdee          # run and assert output matches file.md
 emdee file.emdee --update # run and overwrite file.md with the new output
 ```
 
@@ -31,11 +31,42 @@ git add file.md && git commit -m "update expected output"
 
 The committed `file.md` becomes the new baseline. This keeps diffs visible and intentional in version control.
 
+## The language
+
+emdee's built-in language is a simple Lisp. It has first-class functions, closures, and a standard library of built-in forms for arithmetic, string manipulation, and Markdown composition. It does not expose user-facing macros — the built-in forms cover what you need for documentation and light computation. For heavy logic, emdee is designed to host other language runtimes.
+
 ## Syntax
 
 ### Code blocks
 
-Fenced code blocks tagged `emdee` are executed. Their output is rendered into the document in place of the block.
+Fenced code blocks tagged `emdee` are executed. Their output is rendered into the document in place of the block. This is the core of co-location: prose describes what the code does, the code block proves it, and `emdee` verifies the proof on every run.
+
+The `double` function multiplies its argument by 2:
+
+```emdee
+(define (double n) (* n 2))
+
+(double 21)
+```
+
+42
+
+### Inline expressions
+
+Expressions can be embedded directly in prose using backticks prefixed with `emdee`. The expression is evaluated and its value substituted inline.
+
+```emdee
+(define source-file "README.emdee")
+(define date today)
+```
+
+```plaintext
+This document was generated from `emdee source-file` on `emdee date`.
+```
+
+This document was generated from README.emdee on 2026-03-18.
+
+### List rendering
 
 ```emdee
 (list "eggs" "milk" "bananas")
@@ -44,18 +75,3 @@ Fenced code blocks tagged `emdee` are executed. Their output is rendered into th
 - eggs
 - milk
 - bananas
-
-### Inline expressions
-
-```emdee
-(define source-file "README.emdee")
-(define date today)
-```
-
-Use backticks to embed expressions directly in prose like so:
-
-```plaintext
-This document was generated from `emdee source-file` on `emdee date`.
-```
-
-This document was generated from README.emdee on 2025-03-17.
