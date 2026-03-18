@@ -1,25 +1,35 @@
 # emdee
 
-A lisp for literate programming — where your documentation, code, and tests are the same file.
+A Lisp environment for literate programming — where your code, tests, and documentation coexist in a single file.
 
-Stop writing docs, logic, and tests in three separate places. Write them all at once in a single `.emdee` file.
+The primary goal is co-location: stop maintaining code in one place, tests in another, and docs in a third. Write them all together in a single `.emdee` file. The rendered Markdown document is a natural consequence of running that file, not the end goal in itself.
 
 ## The idea
 
-Every valid Markdown file is a valid emdee file. Rename any `.md` to `.emdee` and it runs as-is. From there, you can add computation incrementally — embed expressions in your prose, add code blocks that render into the document, and assert what the output should look like.
+Every valid Markdown file is a valid emdee file. Rename any `.md` to `.emdee` and it runs as-is. From there, you can add computation incrementally — embed expressions in your prose, add code blocks that execute inline, and commit the rendered output as your expected baseline.
 
-The result of running an emdee file is a rendered Markdown document. Code blocks execute and their output is woven back into the doc. This makes emdee well-suited for:
+The `.emdee` file is always the source of truth. Running it produces a `.md` file. This makes emdee well-suited for:
 
-- **Self-testing documentation** — assert that your examples produce the output you claim
 - **README-driven development** — write the interface in the README first, then make it pass
-- **Docs generation** — use the built-in language to compose and transform Markdown programmatically
+- **Self-testing documentation** — the rendered output is the test; if it changes unexpectedly, the test fails
+- **Programmatic docs** — use the built-in Lisp to compose and transform Markdown from code
 
 ## Usage
 
 ```sh
-emdee render file.emdee
-emdee test file.emdee
+emdee file.emdee          # run and assert output matches file.md (if it exists)
+emdee file.emdee --update # run and overwrite file.md with the new output
 ```
+
+The first time you run a file, `file.md` doesn't exist yet — emdee renders it. On every subsequent run, emdee compares the output to the committed `file.md`. If they differ, the run fails. To intentionally update the baseline:
+
+```sh
+emdee file.emdee --update
+git diff file.md          # review what changed
+git add file.md && git commit -m "update expected output"
+```
+
+The committed `file.md` becomes the new baseline. This keeps diffs visible and intentional in version control.
 
 ## Syntax
 
@@ -49,16 +59,3 @@ This document was generated from `emdee source-file` on `emdee date`.
 ```
 
 This document was generated from README.emdee on 2025-03-17.
-
-### Testing
-
-Testing in emdee is a bit different. `emdee test [FILE]` compares the rendered file to the result on disk which represents your expectation of results. This file itself is a rendered result that has been used to test the development version of emdee!
-
-To make an intentional breaking change, re-render the file and commit the result:
-
-```sh
-emdee render file.emdee > file.emdee
-git add file.emdee && git commit -m "update expected output"
-```
-
-The committed file becomes the new baseline.
