@@ -1,9 +1,8 @@
 # emdee
 
-An environment for literate programming — where your documentation, code, and tests are the same file.
+A lisp for literate programming — where your documentation, code, and tests are the same file.
 
-Stop writing docs, logic, and tests in three separate places.
-Write them all at once in a single `.emdee` file.
+Stop writing docs, logic, and tests in three separate places. Write them all at once in a single `.emdee` file.
 
 ## The idea
 
@@ -18,9 +17,8 @@ The result of running an emdee file is a rendered Markdown document. Code blocks
 ## Usage
 
 ```sh
-emdee run file.emdee        # run and render
-emdee test file.emdee       # run and check all assertions
-emdee watch file.emdee      # re-run on save
+emdee render file.emdee
+emdee test file.emdee
 ```
 
 ## Syntax
@@ -29,53 +27,29 @@ emdee watch file.emdee      # re-run on save
 
 Fenced code blocks tagged `emdee` are executed. Their output is rendered into the document in place of the block.
 
-````markdown
 ```emdee
-heading 1 "Getting Started"
-paragraph "Install emdee and you're ready to go."
+(list "eggs" "milk" "bananas")
 ```
-````
+
+- eggs
+- milk
+- bananas
 
 ### Inline expressions
 
-Use `{{ }}` to embed expressions directly in prose:
-
-```markdown
-This document was generated from {{ source-file }} on {{ date }}.
-```
-
-### Assertions
-
-Use `!>` after an expression to assert the rendered Markdown output:
-
-````markdown
 ```emdee
-bold "hello"
-!> **hello**
-```
-````
-
-If an assertion fails, `emdee test` exits non-zero and reports the diff.
-
-## The built-in language
-
-emdee ships with a small DSL designed for manipulating Markdown. It operates on Markdown nodes — headings, paragraphs, lists, tables, links — rather than raw strings.
-
-```emdee
-heading 2 "Features"
-list [
-  "Self-testing docs"
-  "Inline expressions"
-  "README-driven development"
-]
+(define source-file "README.emdee")
+(define date today)
 ```
 
-The language is intentionally minimal. Its job is to compose and transform documents, not to be a general-purpose scripting language.
+Use backticks to embed expressions directly in prose like so:
 
-## Adapters
+```plaintext
+This document was generated from `emdee source-file` on `emdee date`.
+```
 
-The built-in language covers the core use case. Adapters for other languages are planned, so you'll be able to embed Python, JavaScript, or other runtimes as code block executors.
+This document was generated from README.emdee on 2025-03-17.
 
-## License
+### Testing
 
-[MIT](LICENSE)
+Testing in emdee is a bit different. `emdee test [FILE]` compares the rendered file to the result on disk which represents your expectation of results. This file itself is a rendered result that has been used to test the development version of emdee!
