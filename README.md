@@ -53,3 +53,12 @@ This document was generated from README.emdee on 2025-03-17.
 ### Testing
 
 Testing in emdee is a bit different. `emdee test [FILE]` compares the rendered file to the result on disk which represents your expectation of results. This file itself is a rendered result that has been used to test the development version of emdee!
+
+To make an intentional breaking change, re-render the file and commit the result:
+
+```sh
+emdee render file.emdee > file.emdee
+git add file.emdee && git commit -m "update expected output"
+```
+
+The committed file becomes the new baseline.
