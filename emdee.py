@@ -339,8 +339,8 @@ def process(source, env):
             # Evaluate
             block_out = eval_block('\n'.join(code_lines), env)
 
-            # Skip the old output zone
-            i = _skip_output_zone(lines, i)
+            # Skip the old output zone only if it matches the rendered output
+            i = _skip_matching_output(lines, i, block_out)
 
             # Emit new output
             out.append('')
@@ -375,30 +375,29 @@ def process(source, env):
     return result
 
 
-def _skip_output_zone(lines, i):
-    """Advance past the old output zone following a closing emdee fence."""
+def _skip_matching_output(lines, i, expected):
+    """Skip the next paragraph after a closing fence only if it matches expected.
+
+    This prevents prose from being consumed: if the content following the fence
+    does not exactly equal the freshly-rendered output, it is left in place.
+    """
     n = len(lines)
-    # Skip leading blank lines
+    # Find the start of the next paragraph (skip leading blanks)
     j = i
     while j < n and lines[j].strip() == '':
         j += 1
-    # If we hit a fence or heading, there was no output zone
+    # If next non-blank is a fence or heading, nothing to skip
     if j >= n or lines[j].startswith('```') or lines[j].startswith('#'):
         return j
-    # Consume output lines until fence, heading, or trailing blank(s) before one
+    # Read the candidate paragraph (one contiguous block of non-blank lines)
     k = j
-    while k < n:
-        if lines[k].startswith('```') or lines[k].startswith('#'):
-            return k
-        if lines[k].strip() == '':
-            # Peek past blanks — if next structural element or EOF, end here
-            m = k + 1
-            while m < n and lines[m].strip() == '':
-                m += 1
-            if m >= n or lines[m].startswith('```') or lines[m].startswith('#'):
-                return k
+    while k < n and lines[k].strip() != '':
         k += 1
-    return k
+    candidate = '\n'.join(lines[j:k])
+    # Only skip it if it matches the rendered output exactly
+    if candidate == expected:
+        return k
+    return i  # mismatch — leave it in place
 
 
 def eval_block(code, env):

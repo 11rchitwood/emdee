@@ -83,3 +83,5 @@ State accumulates across blocks — `double` defined above is still in scope. `m
 ```emdee
 (map double (list 1 2 3 4 5))
 ```
+
+emdee is designed to stay small. The language covers what you need for documentation — no more.

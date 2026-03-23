@@ -89,3 +89,5 @@ State accumulates across blocks — `double` defined above is still in scope. `m
 - 6
 - 8
 - 10
+
+emdee is designed to stay small. The language covers what you need for documentation — no more.
