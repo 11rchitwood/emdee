@@ -332,13 +332,13 @@ def process(source, env):
 
     while i < len(lines):
         line = lines[i]
-        stripped = line.rstrip()
+        stripped = line.strip()  # strip both ends for detection; emit original line
 
         if not in_fence and stripped == '```emdee':
             # Collect the emdee block
             code_lines = []
             i += 1
-            while i < len(lines) and lines[i].rstrip() != '```':
+            while i < len(lines) and lines[i].strip() != '```':
                 code_lines.append(lines[i])
                 i += 1
             out.append('```emdee')
@@ -363,7 +363,7 @@ def process(source, env):
             out.append(line)
             i += 1
 
-        elif in_fence and stripped == '```':
+        elif in_fence and stripped == '```':  # closing fence (strip handles indentation)
             # Closing a non-emdee fence
             in_fence = False
             out.append(line)
@@ -457,15 +457,15 @@ def main():
         sys.exit(f'emdee: not found: {args.file}')
 
     md_path = src_path.with_suffix('.md')
-    source = src_path.read_text()
+    source = src_path.read_text(encoding='utf-8')
     env = make_env()
     rendered = process(source, env)
 
     if args.update or not md_path.exists():
-        md_path.write_text(rendered)
+        md_path.write_text(rendered, encoding='utf-8')
         print(f'{"Updated" if args.update else "Created"}: {md_path}')
     else:
-        existing = md_path.read_text()
+        existing = md_path.read_text(encoding='utf-8')
         if rendered == existing:
             print(f'OK: output matches {md_path}')
         else:
