@@ -1,0 +1,36 @@
+# emdee roadmap
+
+```emdee
+(define date today)
+```
+
+
+Last updated: 2026-03-23.
+
+The milestones below are roughly ordered by dependency — test coverage and self-hosting unlock the migration, which unlocks distribution and the static site.
+
+## Test coverage
+
+Before any significant refactor, the Python backend needs a comprehensive test suite. The Copilot review caught real bugs (arity validation, `LispList` inconsistency, unterminated strings, fence detection) that only surfaced through code review. A test suite would catch these automatically and prevent regressions as the codebase evolves.
+
+The goal is 100% coverage of `emdee.py`: the tokenizer, parser, evaluator, built-ins, Markdown processor, and CLI. Tests should be runnable with a single command and enforced in CI on every push.
+
+## Self-hosting
+
+Move as much of the implementation as possible into emdee itself. The Python backend should become a thin layer — file I/O, a minimal Lisp evaluator, and a Markdown processor — while the standard library, built-in forms, and higher-level behaviour are written in `.emdee` files and loaded at startup.
+
+This milestone validates that emdee is expressive enough for real work. It also means that most of the implementation is readable as literate emdee documents, tested by the emdee tool itself.
+
+## Backend migration
+
+Once the backend is thin and the test suite guards against regressions, migrate from Python to a compiled language — Go is the leading candidate. Go produces a single static binary with no runtime dependency, which is the right distribution story for a CLI tool. Users should be able to install emdee with a single command and run it anywhere.
+
+The emdee-layer code (written in `.emdee` files) is portable across backends by definition.
+
+## Static site
+
+Extend the renderer to produce a deployable static site from a collection of `.emdee` files. The project's own documentation — this roadmap, the README, future guides — should be deployable as the emdee homepage directly from the repository, with no separate build step.
+
+## New features
+
+_Placeholder — ideas to be added._

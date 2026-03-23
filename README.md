@@ -91,3 +91,5 @@ State accumulates across blocks — `double` defined above is still in scope. `m
 - 10
 
 emdee is designed to stay small. The language covers what you need for documentation — no more.
+
+See [ROADMAP.md](ROADMAP.md) for the development plan.
