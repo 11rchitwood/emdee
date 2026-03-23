@@ -57,14 +57,13 @@ Expressions can be embedded directly in prose using backticks prefixed with `emd
 
 ```emdee
 (define source-file "README.emdee")
-(define date today)
 ```
 
 ```plaintext
-This document was generated from `emdee source-file` on `emdee date`.
+This file is `emdee source-file`.
 ```
 
-This document was generated from `emdee source-file` on `emdee date`.
+This file is `emdee source-file`.
 
 ### List rendering
 
