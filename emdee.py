@@ -50,6 +50,8 @@ def tokenize(src):
                 if src[j] == '\\':
                     j += 1
                 j += 1
+            if j >= n:
+                raise SyntaxError(f'unterminated string literal at position {i}')
             tokens.append(src[i:j + 1])
             i = j + 1
         else:
@@ -148,6 +150,10 @@ def _call(fn, args):
     if callable(fn):
         return fn(*args)
     if isinstance(fn, Fn):
+        if len(args) != len(fn.params):
+            raise TypeError(
+                f'{fn.name or "lambda"}: expected {len(fn.params)} arg(s), got {len(args)}'
+            )
         env = Env(dict(zip(fn.params, args)), fn.env)
         result = None
         for e in fn.body:
@@ -224,6 +230,10 @@ def ev(expr, env):
         fn = ev(head, env)
         args = [ev(a, env) for a in expr[1:]]
         if isinstance(fn, Fn):
+            if len(args) != len(fn.params):
+                raise TypeError(
+                    f'{fn.name or "lambda"}: expected {len(fn.params)} arg(s), got {len(args)}'
+                )
             env = Env(dict(zip(fn.params, args)), fn.env)
             for b in fn.body[:-1]:
                 ev(b, env)
@@ -271,17 +281,17 @@ def make_env():
         '<=': lambda a, b: a <= b,
         '>=': lambda a, b: a >= b,
         'not': lambda a: not a,
-        'cons': lambda a, b: [a] + (b if isinstance(b, list) else [b]),
-        'car': lambda a: a[0],
-        'cdr': lambda a: a[1:],
+        'cons': lambda a, b: LispList([a] + b.items) if isinstance(b, LispList) else [a] + (b if isinstance(b, list) else [b]),
+        'car': lambda a: a.items[0] if isinstance(a, LispList) else a[0],
+        'cdr': lambda a: LispList(a.items[1:]) if isinstance(a, LispList) else a[1:],
         'list': lambda *a: LispList(a),
-        'null?': lambda a: a == [] or a is None,
-        'pair?': lambda a: isinstance(a, (list, LispList)) and len(a) > 0,
+        'null?': lambda a: (len(a.items) == 0 if isinstance(a, LispList) else a == [] or a is None),
+        'pair?': lambda a: (len(a.items) > 0 if isinstance(a, LispList) else isinstance(a, list) and len(a) > 0),
         'str': lambda *a: ''.join(str(x) for x in a),
         'string-append': lambda *a: ''.join(str(x) for x in a),
         'number->string': str,
         'string->number': lambda s: int(s) if str(s).lstrip('-').isdigit() else float(s),
-        'length': len,
+        'length': lambda a: len(a.items) if isinstance(a, LispList) else len(a),
         'map': _map,
         'filter': _filter,
         'today': date.today().isoformat(),
@@ -347,8 +357,8 @@ def process(source, env):
             if block_out:
                 out.append(block_out)
 
-        elif not in_fence and stripped.startswith('```') and stripped != '```':
-            # Opening a non-emdee fence — pass through verbatim
+        elif not in_fence and stripped.startswith('```'):
+            # Opening a non-emdee fence (with or without language tag) — pass through verbatim
             in_fence = True
             out.append(line)
             i += 1
