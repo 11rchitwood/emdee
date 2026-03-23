@@ -369,7 +369,10 @@ def process(source, env):
             out.append(process_inline(line, env))
             i += 1
 
-    return '\n'.join(out)
+    result = '\n'.join(out)
+    if source.endswith('\n') and not result.endswith('\n'):
+        result += '\n'
+    return result
 
 
 def _skip_output_zone(lines, i):

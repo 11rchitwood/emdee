@@ -75,3 +75,11 @@ This document was generated from `emdee source-file` on `emdee date`.
 - eggs
 - milk
 - bananas
+
+### Higher-order functions
+
+State accumulates across blocks — `double` defined above is still in scope. `map` applies any function to a list:
+
+```emdee
+(map double (list 1 2 3 4 5))
+```

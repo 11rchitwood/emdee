@@ -64,7 +64,7 @@ Expressions can be embedded directly in prose using backticks prefixed with `emd
 This document was generated from `emdee source-file` on `emdee date`.
 ```
 
-This document was generated from README.emdee on 2026-03-22.
+This document was generated from README.emdee on 2026-03-23.
 
 ### List rendering
 
@@ -75,3 +75,17 @@ This document was generated from README.emdee on 2026-03-22.
 - eggs
 - milk
 - bananas
+
+### Higher-order functions
+
+State accumulates across blocks — `double` defined above is still in scope. `map` applies any function to a list:
+
+```emdee
+(map double (list 1 2 3 4 5))
+```
+
+- 2
+- 4
+- 6
+- 8
+- 10
