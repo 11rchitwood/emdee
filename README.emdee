@@ -63,7 +63,7 @@ Expressions can be embedded directly in prose using backticks prefixed with `emd
 This file is `emdee source-file`.
 ```
 
-This file is README.emdee.
+This file is `emdee source-file`.
 
 ### List rendering
 
@@ -82,12 +82,6 @@ State accumulates across blocks — `double` defined above is still in scope. `m
 ```emdee
 (map double (list 1 2 3 4 5))
 ```
-
-- 2
-- 4
-- 6
-- 8
-- 10
 
 emdee is designed to stay small. The language covers what you need for documentation — no more.
 
